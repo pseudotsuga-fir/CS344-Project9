@@ -35,7 +35,14 @@ void initialize_mem(void)
 //
 unsigned char get_page(void)
 {
-    // TODO
+    // For each page_number inside the first 64 bytes of the zero page (the used page array)    
+    for(int i = 1; i < 64; i++) {
+        if (mem[i] == 0) {
+            mem[i] = 1;
+            return i;
+        }
+    }
+    return 0xff;
 }
 
 //
@@ -45,7 +52,23 @@ unsigned char get_page(void)
 //
 void new_process(int proc_num, int page_count)
 {
-    // TODO
+    unsigned char page_table = get_page();
+    if (page_table == 0xff) {
+        printf("OOM: proc %d: page table\n", proc_num);
+        return;
+    }
+
+    mem[64 + proc_num] = page_table;
+    
+    for(int i = 0; i < page_count; i++) {
+        unsigned char new_page = get_page();
+        if (new_page == 0xff) {
+            printf("OOM: proc %d: page table\n", proc_num);
+            return;
+        }
+        int pt_address = get_address(page_table, i);
+        mem[pt_address] = new_page;
+    }
 }
 
 //
