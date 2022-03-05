@@ -24,7 +24,8 @@ int get_address(int page, int offset)
 //
 void initialize_mem(void)
 {
-    // TODO
+    memset(mem, 0, MEM_SIZE);
+    mem[0] = 1;
 }
 
 //
@@ -45,6 +46,14 @@ unsigned char get_page(void)
 void new_process(int proc_num, int page_count)
 {
     // TODO
+}
+
+//
+// Get the page table for a given process
+//
+unsigned char get_page_table(int proc_num)
+{
+    return mem[proc_num + 64];
 }
 
 //
